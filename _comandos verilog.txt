@@ -1,0 +1,11 @@
+# Compilação para verificação de erro
+iverilog file.v
+
+# Para o testebench (simulação) é criado um arquivo de saida (-o) .vpp
+iverilog -o sim.vvp file.v tb_file.v
+
+# Executa a simulação e cria o arquivo .vcd que será usado no gtkwave. O arquivo .vcd só será criado se na simulaçãotiver o comando $dumpfile("file.vcd");
+vvp sim.vvp
+
+# Execução da simulação no gtkwave
+gtkwave sim.vcd
