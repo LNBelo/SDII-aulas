@@ -1,0 +1,63 @@
+#! /c/Source/iverilog-install/bin/vvp
+:ivl_version "12.0 (devel)" "(s20150603-1539-g2693dd32b)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "C:\iverilog\lib\ivl\system.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_sys.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_textio.vpi";
+:vpi_module "C:\iverilog\lib\ivl\v2005_math.vpi";
+:vpi_module "C:\iverilog\lib\ivl\va_math.vpi";
+S_000001bb73575f80 .scope module, "extrator_ieee754" "extrator_ieee754" 2 2;
+ .timescale 0 0;
+    .port_info 0 /INPUT 32 "float_in";
+    .port_info 1 /OUTPUT 1 "sinal";
+    .port_info 2 /OUTPUT 8 "expoente";
+    .port_info 3 /OUTPUT 23 "fracao";
+v000001bb735436d0_0 .net "expoente", 7 0, L_000001bb73573f00;  1 drivers
+o000001bb73577008 .functor BUFZ 32, C4<zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz>; HiZ drive
+v000001bb735430e0_0 .net "float_in", 31 0, o000001bb73577008;  0 drivers
+v000001bb736a9e60_0 .net "fracao", 22 0, L_000001bb73574040;  1 drivers
+v000001bb736a9ca0_0 .net "sinal", 0 0, L_000001bb735740e0;  1 drivers
+L_000001bb735740e0 .part o000001bb73577008, 31, 1;
+L_000001bb73573f00 .part o000001bb73577008, 23, 8;
+L_000001bb73574040 .part o000001bb73577008, 0, 23;
+S_000001bb73576110 .scope module, "moduleName" "moduleName" 2 13;
+ .timescale 0 0;
+    .port_info 0 /INPUT 8 "expoente";
+    .port_info 1 /INPUT 23 "fracao";
+    .port_info 2 /OUTPUT 1 "eh_zero";
+    .port_info 3 /OUTPUT 1 "eh_infinito";
+    .port_info 4 /OUTPUT 1 "eh_nan";
+L_000001bb736a9b80 .functor AND 1, L_000001bb73574c20, L_000001bb73573fa0, C4<1>, C4<1>;
+L_000001bb736a9d40 .functor AND 1, L_000001bb73574540, L_000001bb73573fa0, C4<1>, C4<1>;
+L_000001bb736a9f00 .functor NOT 1, L_000001bb73573fa0, C4<0>, C4<0>, C4<0>;
+L_000001bb735434d0 .functor AND 1, L_000001bb73574540, L_000001bb736a9f00, C4<1>, C4<1>;
+L_000001bb735bb858 .functor BUFT 1, C4<00000000>, C4<0>, C4<0>, C4<0>;
+v000001bb736a9ae0_0 .net/2u *"_ivl_0", 7 0, L_000001bb735bb858;  1 drivers
+L_000001bb735bb930 .functor BUFT 1, C4<11111111>, C4<0>, C4<0>, C4<0>;
+v000001bb735762a0_0 .net/2u *"_ivl_12", 7 0, L_000001bb735bb930;  1 drivers
+v000001bb73574360_0 .net *"_ivl_20", 0 0, L_000001bb736a9f00;  1 drivers
+v000001bb73574a40_0 .net *"_ivl_4", 31 0, L_000001bb735742c0;  1 drivers
+L_000001bb735bb8a0 .functor BUFT 1, C4<000000000>, C4<0>, C4<0>, C4<0>;
+v000001bb73574cc0_0 .net *"_ivl_7", 8 0, L_000001bb735bb8a0;  1 drivers
+L_000001bb735bb8e8 .functor BUFT 1, C4<00000000000000000000000000000000>, C4<0>, C4<0>, C4<0>;
+v000001bb73574180_0 .net/2u *"_ivl_8", 31 0, L_000001bb735bb8e8;  1 drivers
+v000001bb735745e0_0 .net "eh_infinito", 0 0, L_000001bb736a9d40;  1 drivers
+v000001bb735747c0_0 .net "eh_nan", 0 0, L_000001bb735434d0;  1 drivers
+v000001bb73574680_0 .net "eh_zero", 0 0, L_000001bb736a9b80;  1 drivers
+o000001bb73577308 .functor BUFZ 8, C4<zzzzzzzz>; HiZ drive
+v000001bb73574720_0 .net "expoente", 7 0, o000001bb73577308;  0 drivers
+v000001bb73574e00_0 .net "expoente_255", 0 0, L_000001bb73574540;  1 drivers
+v000001bb73574b80_0 .net "expoente_zero", 0 0, L_000001bb73574c20;  1 drivers
+o000001bb73577398 .functor BUFZ 23, C4<zzzzzzzzzzzzzzzzzzzzzzz>; HiZ drive
+v000001bb73574d60_0 .net "fracao", 22 0, o000001bb73577398;  0 drivers
+v000001bb73574220_0 .net "fracao_zero", 0 0, L_000001bb73573fa0;  1 drivers
+L_000001bb73574c20 .cmp/eq 8, o000001bb73577308, L_000001bb735bb858;
+L_000001bb735742c0 .concat [ 23 9 0 0], o000001bb73577398, L_000001bb735bb8a0;
+L_000001bb73573fa0 .cmp/eq 32, L_000001bb735742c0, L_000001bb735bb8e8;
+L_000001bb73574540 .cmp/eq 8, o000001bb73577308, L_000001bb735bb930;
+# The file index is used to find the file name in the following table.
+:file_names 3;
+    "N/A";
+    "<interactive>";
+    "fpu.v";
