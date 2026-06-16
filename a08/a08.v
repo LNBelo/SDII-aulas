@@ -2,9 +2,7 @@
 // SOMADOR / SUBTRATOR
 ///////
 
-module add_sub #(
-    parameter N = 8
-)(
+module add_sub #(parameter N = 8)(
     input  wire [N-1:0] a,
     input  wire [N-1:0] b,
     input  wire sub,              // 0: soma (A+B), 1: subtração (A-B)
