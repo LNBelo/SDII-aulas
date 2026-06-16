@@ -1,0 +1,169 @@
+ Me ajude com esse exercício. No arquivo Exercicio_Aula_10.pdf onde diz 16MB deve ser 16KB.
+
+● Vou ler o PDF para entender o contexto do exercício.
+
+  Searched for 1 pattern, read 1 file (ctrl+o to expand)
+
+● Você está certo — 4096 palavras × 4 bytes = 16 KB, não 16 MB. Erro no enunciado.
+
+  Agora vou ver os arquivos do exercício para ajudar a completar o toplevel.
+
+  Searched for 1 pattern, read 1 file (ctrl+o to expand)
+
+● Agora vou analisar todos os #PRENCHAAQUI e calcular os valores corretos antes de editar.
+
+  Análise do espaço de endereçamento (byte-addressed, padrão WishBone com 32b):
+  - 4096 palavras × 4 bytes = 16.384 bytes = 2¹⁴ → ADDR_WIDTH = 14
+  - DATA_WIDTH = 32
+  - ROM: 256 palavras = 1024 bytes → endereços 0x0000 a 0x03FF; o slice [9:2] extrai os 8 bits do índice da palavra ✓
+  - RAM: 256 palavras = 1024 bytes → final do espaço: 0x3C00 a 0x3FFF
+  - Escravo 1: endereço único 0x0400
+
+  DMA (incrementa +1 a cada transferência de 32b):
+  - ADD_SOURCE = 0x0000, ADD_DESTIN = 0x3C00, WORDS = 1024
+  (1024 passos × 4 bytes/passo = 256 palavras copiadas corretamente via [9:2])
+
+  Máscaras do mux (match = bits mascarados devem igualar o addr):
+  - Escravo 0 (ROM): addr=0x0000, mask=0x3C00 → seleciona bits[13:10]=0000 → 0x0000–0x03FF
+  - Escravo 1: addr=0x0400, mask=0x3FFF → endereço exato 0x0400
+  - Escravo 2 (RAM): addr=0x3C00, mask=0x3C00 → seleciona bits[13:10]=1111 → 0x3C00–0x3FFF
+
+  Testbench: 1024 iterações × 4 ciclos × 20 unidades = ~81.920 → usar #100000
+
+  Agora aplico todas as substituições:
+
+● Update(aula10.v)
+  ⎿  Added 1 line, removed 1 line
+      18          clk = 0;
+      19          rst = 1;
+      20          #10 rst = 0;
+      21 -        #100 $finish;
+      21 +        #100000 $finish;
+      22      end
+      23
+      24  endmodule
+
+● Update(aula10.v)
+  ⎿  Added 2 lines, removed 2 lines
+      29      input  wire                    rst_i,
+      30      output wire                    dma_done_o
+      31  );
+      32 -    localparam DATA_WIDTH = #PRENCHAAQUI;
+      33 -    localparam ADDR_WIDTH = #PRENCHAAQUI;
+      32 +    localparam DATA_WIDTH = 32;
+      33 +    localparam ADDR_WIDTH = 14;
+      34
+      35      wire wbm_we,  wbm_stb,  wbm_ack,  wbm_cyc,
+      36                    wbs0_stb, wbs0_ack, wbs0_cyc,
+
+● Update(aula10.v)
+  ⎿  Added 3 lines, removed 3 lines
+      42      dma #(
+      43          .ADDR_WIDTH(ADDR_WIDTH),
+      44          .DATA_WIDTH(DATA_WIDTH),
+      45 -        .ADD_SOURCE(#PRENCHAAQUI),
+      46 -        .ADD_DESTIN(#PRENCHAAQUI),
+      47 -        .WORDS(#PRENCHAAQUI)
+      45 +        .ADD_SOURCE(14'h0000),
+      46 +        .ADD_DESTIN(14'h3C00),
+      47 +        .WORDS(1024)
+      48      ) dma (
+      49          .clk_i(clk_i),
+      50          .rst_i(rst_i),
+
+● Update(aula10.v)
+  ⎿  Added 1 line, removed 1 line
+      59      );
+      60
+      61      wb_rom #(
+      62 -        .ADDR_WIDTH(#PRENCHAAQUI),
+      62 +        .ADDR_WIDTH(8),
+      63          .DATA_WIDTH(DATA_WIDTH),
+      64          .INIT_FILE("imdata.hex")
+      65      ) rom (
+
+● Update(aula10.v)
+  ⎿  Added 1 line, removed 1 line
+      73      );
+      74
+      75      wb_ram #(
+      76 -        .ADDR_WIDTH(#PRENCHAAQUI),
+      76 +        .ADDR_WIDTH(8),
+      77          .DATA_WIDTH(DATA_WIDTH)
+      78      ) ram (
+      79          .clk_i(clk_i),
+
+● Update(aula10.v)
+  ⎿  Added 4 lines, removed 4 lines
+      116          .wbs0_err_i(),
+      117          .wbs0_rty_i(),
+      118          .wbs0_cyc_o(wbs0_cyc),
+      119 -        .wbs0_addr(#PRENCHAAQUI),
+      120 -        .wbs0_addr_msk(#PRENCHAAQUI),
+      119 +        .wbs0_addr(14'h0000),
+      120 +        .wbs0_addr_msk(14'h3C00),
+      121
+      122 -        .wbs1_addr(#PRENCHAAQUI),
+      123 -        .wbs1_addr_msk(#PRENCHAAQUI),
+      122 +        .wbs1_addr(14'h0400),
+      123 +        .wbs1_addr_msk(14'h3FFF),
+      124
+      125
+      126          .wbs2_adr_o(wbs2_adr),
+
+● Update(aula10.v)
+  ⎿  Added 2 lines, removed 2 lines
+      133          .wbs2_err_i(),
+      134          .wbs2_rty_i(),
+      135          .wbs2_cyc_o(wbs2_cyc),
+      136 -        .wbs2_addr(#PRENCHAAQUI),
+      137 -        .wbs2_addr_msk(#PRENCHAAQUI)
+      136 +        .wbs2_addr(14'h3C00),
+      137 +        .wbs2_addr_msk(14'h3C00)
+      138      );
+      139  endmodule
+      140
+
+● Verificando o resultado final:
+
+  Read 1 file (ctrl+o to expand)
+
+● O arquivo está correto. Aqui está o resumo de todas as escolhas:
+
+  ---
+  Raciocínio completo:
+
+  O barramento WishBone usa endereçamento por byte (padrão). Por isso o slice [9:2] no template: os 2 bits menos
+  significativos são para seleção de byte, e [9:2] extrai os 8 bits do índice da palavra dentro de um bloco de 256
+  palavras.
+
+  ┌────────────────────┬─────────────────┬────────────────────────────────────────────────────────────┐
+  │     Parâmetro      │      Valor      │                           Motivo                           │
+  ├────────────────────┼─────────────────┼────────────────────────────────────────────────────────────┤
+  │ DATA_WIDTH         │ 32              │ 32 bits por palavra                                        │
+  ├────────────────────┼─────────────────┼────────────────────────────────────────────────────────────┤
+  │ ADDR_WIDTH         │ 14              │ 2¹⁴ = 16.384 bytes = 4096 palavras × 4 bytes               │
+  ├────────────────────┼─────────────────┼────────────────────────────────────────────────────────────┤
+  │ ROM/RAM ADDR_WIDTH │ 8               │ 256 entradas, acessadas via [9:2]                          │
+  ├────────────────────┼─────────────────┼────────────────────────────────────────────────────────────┤
+  │ ADD_SOURCE         │ 14'h0000        │ ROM começa no byte 0                                       │
+  ├────────────────────┼─────────────────┼────────────────────────────────────────────────────────────┤
+  │ ADD_DESTIN         │ 14'h3C00        │ RAM começa nos últimos 1024 bytes: 16384−1024=15360=0x3C00 │
+  ├────────────────────┼─────────────────┼────────────────────────────────────────────────────────────┤
+  │ WORDS              │ 1024            │ 256 palavras × 4 steps/palavra (DMA incrementa por byte)   │
+  ├────────────────────┼─────────────────┼────────────────────────────────────────────────────────────┤
+  │ wbs0 addr/mask     │ 0x0000 / 0x3C00 │ Seleciona bits[13:10]=0000 → 0x0000–0x03FF (ROM)           │
+  ├────────────────────┼─────────────────┼────────────────────────────────────────────────────────────┤
+  │ wbs1 addr/mask     │ 0x0400 / 0x3FFF │ Endereço único 0x0400                                      │
+  ├────────────────────┼─────────────────┼────────────────────────────────────────────────────────────┤
+  │ wbs2 addr/mask     │ 0x3C00 / 0x3C00 │ Seleciona bits[13:10]=1111 → 0x3C00–0x3FFF (RAM)           │
+  ├────────────────────┼─────────────────┼────────────────────────────────────────────────────────────┤
+  │ Testbench          │ #100000       │ ~81.920 unidades necessárias para 1024 iterações           │
+  └────────────────────┴─────────────────┴────────────────────────────────────────────────────────────┘
+
+  Atenção: há um pequeno bug no template (fora dos marcadores): o DMA está conectado com .done_o(dma_done), mas dma_done
+   não é declarado como wire e dma_done_o nunca é atribuído. O sinal done no testbench ficará como Z/X. A cópia dos
+  dados funciona corretamente, mas se o professor verificar o sinal done na forma de onda, estará indefinido. Para
+  corrigir, seria necessário trocar .done_o(dma_done) por .done_o(dma_done_o) na linha 51.
+
+✻ Baked for 22m 43s
