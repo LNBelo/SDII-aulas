@@ -7,23 +7,182 @@
 :vpi_module "C:\iverilog\lib\ivl\vhdl_textio.vpi";
 :vpi_module "C:\iverilog\lib\ivl\v2005_math.vpi";
 :vpi_module "C:\iverilog\lib\ivl\va_math.vpi";
-S_0000016f89be2df0 .scope module, "uart_tx" "uart_tx" 2 1;
+S_00000284de1c2b10 .scope module, "uart_tx" "uart_tx" 2 1;
  .timescale 0 0;
     .port_info 0 /INPUT 1 "clk";
     .port_info 1 /INPUT 1 "rst";
     .port_info 2 /INPUT 1 "tx_start";
     .port_info 3 /INPUT 8 "data";
     .port_info 4 /OUTPUT 1 "tx";
-o0000016f89c167f8 .functor BUFZ 1, C4<z>; HiZ drive
-v0000016f89be3340_0 .net "clk", 0 0, o0000016f89c167f8;  0 drivers
-o0000016f89c16828 .functor BUFZ 8, C4<zzzzzzzz>; HiZ drive
-v0000016f89be2f80_0 .net "data", 7 0, o0000016f89c16828;  0 drivers
-o0000016f89c16858 .functor BUFZ 1, C4<z>; HiZ drive
-v0000016f89be3020_0 .net "rst", 0 0, o0000016f89c16858;  0 drivers
-o0000016f89c16888 .functor BUFZ 1, C4<z>; HiZ drive
-v0000016f89be30c0_0 .net "tx", 0 0, o0000016f89c16888;  0 drivers
-o0000016f89c168b8 .functor BUFZ 1, C4<z>; HiZ drive
-v0000016f89cee600_0 .net "tx_start", 0 0, o0000016f89c168b8;  0 drivers
+P_00000284de1e7b10 .param/l "BAUD_RATE" 0 2 10, +C4<00000000000000000010010110000000>;
+P_00000284de1e7b48 .param/l "CLK_FREQ" 0 2 9, +C4<00000010111110101111000010000000>;
+P_00000284de1e7b80 .param/l "DATA" 1 2 49, C4<010>;
+P_00000284de1e7bb8 .param/l "DIVISOR" 1 2 11, +C4<00000000000000000001010001011000>;
+P_00000284de1e7bf0 .param/l "IDLE" 1 2 47, C4<000>;
+P_00000284de1e7c28 .param/l "PARITY" 1 2 50, C4<011>;
+P_00000284de1e7c60 .param/l "START" 1 2 48, C4<001>;
+P_00000284de1e7c98 .param/l "STOP1" 1 2 51, C4<100>;
+P_00000284de1e7cd0 .param/l "STOP2" 1 2 52, C4<101>;
+P_00000284de1e7d08 .param/l "largura" 0 2 21, +C4<000000000000000000000000000001100>;
+v00000284de1c3060_0 .var "baud_tick", 0 0;
+v00000284de1a8050_0 .var "bit_index", 2 0;
+o00000284de1fe038 .functor BUFZ 1, C4<z>; HiZ drive
+v00000284de1c2ca0_0 .net "clk", 0 0, o00000284de1fe038;  0 drivers
+v00000284de1c2d40_0 .var "contador", 12 0;
+o00000284de1fe098 .functor BUFZ 8, C4<zzzzzzzz>; HiZ drive
+v00000284de1c2de0_0 .net "data", 7 0, o00000284de1fe098;  0 drivers
+v00000284de1f3a20_0 .var "data_reg", 7 0;
+v00000284de1f3ac0_0 .var "parity_bit", 0 0;
+o00000284de1fe128 .functor BUFZ 1, C4<z>; HiZ drive
+v00000284de1f3b60_0 .net "rst", 0 0, o00000284de1fe128;  0 drivers
+v00000284de1f3c00_0 .var "state", 2 0;
+v00000284de1f3ca0_0 .var "tx", 0 0;
+o00000284de1fe1b8 .functor BUFZ 1, C4<z>; HiZ drive
+v00000284de1f3d40_0 .net "tx_start", 0 0, o00000284de1fe1b8;  0 drivers
+E_00000284de1aaf00 .event posedge, v00000284de1c2ca0_0;
+    .scope S_00000284de1c2b10;
+T_0 ;
+    %wait E_00000284de1aaf00;
+    %load/vec4 v00000284de1f3b60_0;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_0.0, 8;
+    %pushi/vec4 0, 0, 13;
+    %assign/vec4 v00000284de1c2d40_0, 0;
+    %pushi/vec4 0, 0, 1;
+    %assign/vec4 v00000284de1c3060_0, 0;
+    %jmp T_0.1;
+T_0.0 ;
+    %load/vec4 v00000284de1c2d40_0;
+    %pad/u 32;
+    %cmpi/e 5207, 0, 32;
+    %jmp/0xz  T_0.2, 4;
+    %pushi/vec4 1, 0, 1;
+    %assign/vec4 v00000284de1c3060_0, 0;
+    %pushi/vec4 0, 0, 13;
+    %assign/vec4 v00000284de1c2d40_0, 0;
+    %jmp T_0.3;
+T_0.2 ;
+    %pushi/vec4 0, 0, 1;
+    %assign/vec4 v00000284de1c3060_0, 0;
+    %load/vec4 v00000284de1c2d40_0;
+    %addi 1, 0, 13;
+    %assign/vec4 v00000284de1c2d40_0, 0;
+T_0.3 ;
+T_0.1 ;
+    %jmp T_0;
+    .thread T_0;
+    .scope S_00000284de1c2b10;
+T_1 ;
+    %wait E_00000284de1aaf00;
+    %load/vec4 v00000284de1f3b60_0;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_1.0, 8;
+    %pushi/vec4 0, 0, 3;
+    %assign/vec4 v00000284de1f3c00_0, 0;
+    %pushi/vec4 0, 0, 3;
+    %assign/vec4 v00000284de1a8050_0, 0;
+    %pushi/vec4 1, 0, 1;
+    %assign/vec4 v00000284de1f3ca0_0, 0;
+    %jmp T_1.1;
+T_1.0 ;
+    %load/vec4 v00000284de1c3060_0;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_1.2, 8;
+    %load/vec4 v00000284de1f3c00_0;
+    %dup/vec4;
+    %pushi/vec4 0, 0, 3;
+    %cmp/u;
+    %jmp/1 T_1.4, 6;
+    %dup/vec4;
+    %pushi/vec4 1, 0, 3;
+    %cmp/u;
+    %jmp/1 T_1.5, 6;
+    %dup/vec4;
+    %pushi/vec4 2, 0, 3;
+    %cmp/u;
+    %jmp/1 T_1.6, 6;
+    %dup/vec4;
+    %pushi/vec4 3, 0, 3;
+    %cmp/u;
+    %jmp/1 T_1.7, 6;
+    %dup/vec4;
+    %pushi/vec4 4, 0, 3;
+    %cmp/u;
+    %jmp/1 T_1.8, 6;
+    %dup/vec4;
+    %pushi/vec4 5, 0, 3;
+    %cmp/u;
+    %jmp/1 T_1.9, 6;
+    %pushi/vec4 0, 0, 3;
+    %assign/vec4 v00000284de1f3c00_0, 0;
+    %jmp T_1.11;
+T_1.4 ;
+    %load/vec4 v00000284de1f3d40_0;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_1.12, 8;
+    %pushi/vec4 1, 0, 1;
+    %assign/vec4 v00000284de1f3ca0_0, 0;
+    %load/vec4 v00000284de1c2de0_0;
+    %assign/vec4 v00000284de1f3a20_0, 0;
+    %load/vec4 v00000284de1c2de0_0;
+    %xor/r;
+    %assign/vec4 v00000284de1f3ac0_0, 0;
+    %pushi/vec4 1, 0, 3;
+    %assign/vec4 v00000284de1f3c00_0, 0;
+T_1.12 ;
+    %jmp T_1.11;
+T_1.5 ;
+    %pushi/vec4 0, 0, 1;
+    %assign/vec4 v00000284de1f3ca0_0, 0;
+    %pushi/vec4 0, 0, 3;
+    %assign/vec4 v00000284de1a8050_0, 0;
+    %pushi/vec4 2, 0, 3;
+    %assign/vec4 v00000284de1f3c00_0, 0;
+    %jmp T_1.11;
+T_1.6 ;
+    %load/vec4 v00000284de1f3a20_0;
+    %load/vec4 v00000284de1a8050_0;
+    %part/u 1;
+    %assign/vec4 v00000284de1f3ca0_0, 0;
+    %load/vec4 v00000284de1a8050_0;
+    %pad/u 32;
+    %cmpi/ne 7, 0, 32;
+    %jmp/0xz  T_1.14, 4;
+    %load/vec4 v00000284de1a8050_0;
+    %addi 1, 0, 3;
+    %assign/vec4 v00000284de1a8050_0, 0;
+    %pushi/vec4 2, 0, 3;
+    %assign/vec4 v00000284de1f3c00_0, 0;
+    %jmp T_1.15;
+T_1.14 ;
+    %pushi/vec4 3, 0, 3;
+    %assign/vec4 v00000284de1f3c00_0, 0;
+T_1.15 ;
+    %jmp T_1.11;
+T_1.7 ;
+    %load/vec4 v00000284de1f3ac0_0;
+    %assign/vec4 v00000284de1f3ca0_0, 0;
+    %pushi/vec4 4, 0, 3;
+    %assign/vec4 v00000284de1f3c00_0, 0;
+    %jmp T_1.11;
+T_1.8 ;
+    %pushi/vec4 1, 0, 1;
+    %assign/vec4 v00000284de1f3ca0_0, 0;
+    %pushi/vec4 5, 0, 3;
+    %assign/vec4 v00000284de1f3c00_0, 0;
+    %jmp T_1.11;
+T_1.9 ;
+    %pushi/vec4 1, 0, 1;
+    %assign/vec4 v00000284de1f3ca0_0, 0;
+    %pushi/vec4 0, 0, 3;
+    %assign/vec4 v00000284de1f3c00_0, 0;
+    %jmp T_1.11;
+T_1.11 ;
+    %pop/vec4 1;
+T_1.2 ;
+T_1.1 ;
+    %jmp T_1;
+    .thread T_1;
 # The file index is used to find the file name in the following table.
 :file_names 3;
     "N/A";
